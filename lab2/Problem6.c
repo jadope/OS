@@ -16,18 +16,21 @@ printf("Ingrese el número de veces de lanzar las monedas.\n(585, por ejemplo, h
 scanf("%d",&lanzarmoneda);
 digit = digitCounter(lanzarmoneda);
 printf("Valor de resultado[10]: %c\n", resultado[10]);
+for (j=0; j<10;j++){ //Se realiza esta función para inicializar los valores de la cadena de caracteres. Si no se hacía, generaba caracteres en las 4 primeras posiciones ("#, N, � y 3")
+    resultado[j]='\0';
+}
 for (i=0; i<digit; i++){
     lanzamiento=fmod(lanzarmoneda, pow(10, i+1))/pow(10,i); //Me retorna el último dígito del número ingresado.  
     printf("digit %d  --  lanzarmoneda %d   --- ", digit, lanzarmoneda);
-    printf("Lanzamiento: %f \n", lanzamiento);
+    printf("Lanzamiento: %.1f \n", lanzamiento);
     for (j=0; j<floor(lanzamiento);j++){//Tengo que aplicar la función floor, para pasarlo de double a int y evitar que sobrepase el ciclo.
         random = rand()%(2);
         if (random==1){
-            resultado[j]+='C'; //Si sale 1, agregue C a la cadena de caracteres.
+            resultado[j]='C'; //Si sale 1, agregue C a la cadena de caracteres.
             printf("Caracter: %c, random: %d, J: %d\n", resultado[j], random, j);
         }
         else if (random==0){
-            resultado[j]+='S'; //Si sale 0, agregue Sa la cadena de caracteres.
+            resultado[j]='S'; //Si sale 0, agregue Sa la cadena de caracteres.
             printf("Caracter: %c, random: %d, J: %d\n", resultado[j], random, j);
         }
     }
