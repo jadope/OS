@@ -1,11 +1,17 @@
+/* 
+Hacer una funcion que permita que un usuario obtenga el subindice asociado a
+la primera aparicion de un caracter en un array. Si el caracter no esta la función 
+debera retornar -1. Haga uso de la funcion del punto 1 para validar la presencia 
+del caracter. A continuacion se muestra la forma de la función:
+*/
+
 #include <stdio.h>
 #include <string.h>
 
 int compare(char a, char b, int posicion, int *indice) {
     
-    if (a == b) {
-        // el indice empieza desde el 1
-        *indice = posicion + 1;        
+    if (a == b) {        
+        *indice = posicion;        
         return 1;
     }
     return 0;

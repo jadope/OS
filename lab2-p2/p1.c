@@ -1,11 +1,11 @@
+/*
+Hacer que barra una cadena de caracteres en busca de un caracter especifico. 
+La funcion deberá retornar el numero de veces que aparece este caracter o -1
+en caso de que no este. La forma de la funcion se muestra a continuación
+*/
+
 #include <stdio.h>
 #include <string.h>
-
-/*
-    Hacer que barra una cadena de caracteres en busca de un caracter especifico. 
-    La funcion deberá retornar el numero de veces que aparece este caracter o -1
-    en caso de que no este. La forma de la funcion se muestra a continuación
-*/
 
 void compare(char a, char b, int *counter) {
     
