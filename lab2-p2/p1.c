@@ -14,7 +14,7 @@ void compare(char a, char b, int *counter) {
     }
 }
 
-int traverse(char *c, char character) { 
+int contarCaracter(char *c, char character) { 
 
     int counter = 0;
     int longitud = strlen(c);
@@ -31,7 +31,7 @@ void test() {
 
     char c[] = "abaccc";
     char character = 'c';
-    int contador = traverse(c, character);
+    int contador = contarCaracter(c, character);
     printf("Hay un total de ocurrencias: %d \n", contador);
 }
 
