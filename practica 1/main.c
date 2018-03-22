@@ -163,6 +163,15 @@ void readFile() {
 }
 
 int main(int argc, char const *argv[]) {
+
+    char path[] = "/proc/";
+    char status[] = "/status";
+    const char *pid = argv[1];
+    
+    strcat(path, pid);
+    strcat(path, status);
+    printf("%s \n", path);
+
     readFile();
 }
 
