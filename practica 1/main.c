@@ -14,7 +14,7 @@
 #include <string.h>
 
 struct Data {
-    char name[100];
+    char *name;
 };
 
 struct Data data;
@@ -27,14 +27,15 @@ void getData(char *buffer) {
 
     // printf("%s", buffer);
     char *line, *value;
-    char name[] = "Name:", divider = ':';
+    char name[] = "Name", divider = ':';
 
     line = strstr(buffer, name);
     
     if (line != NULL) {
         value = strchr(line, divider);
         value++;
-        printf("%s", value);
+        data.name = value;
+        printf("%s", data.name);
     }
 }
 
