@@ -15,27 +15,94 @@
 
 struct Data {
     char *name;
+    char *state;
+    char *text;
+    char *data;
+    char *stack;
+    char *voluntary;
+    char *involuntary;
 };
 
 struct Data data;
 
-void getValue(char *identifier, char *string) {
+char *getValue(char *line) {
+    char *value;
+    char divider = ':';
 
+    if (line != NULL) {
+        value = strchr(line, divider);
+        value++;
+        return value;
+    } else {
+        return NULL;
+    }
 }
 
 void getData(char *buffer) {
 
-    // printf("%s", buffer);
     char *line, *value;
-    char name[] = "Name", divider = ':';
+    char name[] = "Name",
+         state[] = "State",
+         text[] = "VmExe",
+         _data[] = "VmData",
+         stack[] = "VmStk",
+         voluntary[] = "voluntary_ctxt_switches",
+         involuntary[] = "nonvoluntary_ctxt_switches";         
 
     line = strstr(buffer, name);
+    value = getValue(line);
     
-    if (line != NULL) {
-        value = strchr(line, divider);
-        value++;
-        data.name = value;
-        printf("%s", data.name);
+    if (value != NULL) {
+        data.name = value;        
+        printf("nombre: %s", data.name);
+    }    
+    
+    line = strstr(buffer, state);
+    value = getValue(line);
+    
+    if (value != NULL) {
+        data.state = value;
+        printf("estado: %s", data.state);        
+    }
+
+    line = strstr(buffer, text);
+    value = getValue(line);
+    
+    if (value != NULL) {
+        data.text = value;
+        printf("text: %s", data.text);        
+    }
+
+    line = strstr(buffer, _data);
+    value = getValue(line);
+    
+    if (value != NULL) {
+        data.data = value;
+        printf("data: %s", data.data);        
+    }
+
+    line = strstr(buffer, stack);
+    value = getValue(line);
+    
+    if (value != NULL) {
+        data.stack = value;
+        printf("stack: %s", data.stack);        
+    }
+
+    line = strstr(buffer, voluntary);
+    value = getValue(line);
+    
+    if (value != NULL && data.voluntary == NULL) {
+        data.voluntary = value;
+        printf("voluntary: %s", data.voluntary);        
+    }
+
+    line = strstr(buffer, involuntary);
+    value = getValue(line);
+    
+    if (value != NULL) {
+        data.involuntary = value;
+        printf("involuntary: %s", data.involuntary);        
     }
 }
 
