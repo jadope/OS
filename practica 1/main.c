@@ -13,6 +13,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+// structures
+
 struct Data {
     char *name;
     char *state;
@@ -24,6 +26,12 @@ struct Data {
 };
 
 struct Data data;
+
+// global variables
+
+char *line, *value;
+
+// utils
 
 char *getValue(char *line) {
     char *value;
@@ -38,25 +46,21 @@ char *getValue(char *line) {
     }
 }
 
-void getData(char *buffer) {
+void getName(char *buffer) {
 
-    char *line, *value;
-    char name[] = "Name",
-         state[] = "State",
-         text[] = "VmExe",
-         _data[] = "VmData",
-         stack[] = "VmStk",
-         voluntary[] = "voluntary_ctxt_switches",
-         involuntary[] = "nonvoluntary_ctxt_switches";         
-
+    char name[] = "Name";
     line = strstr(buffer, name);
     value = getValue(line);
     
     if (value != NULL) {
         data.name = value;        
         printf("nombre: %s", data.name);
-    }    
-    
+    } 
+}
+
+void getState(char *buffer) {
+
+    char state[] = "State";
     line = strstr(buffer, state);
     value = getValue(line);
     
@@ -64,7 +68,11 @@ void getData(char *buffer) {
         data.state = value;
         printf("estado: %s", data.state);        
     }
+}
 
+void getTextSpace(char *buffer) {
+
+    char text[] = "VmExe";
     line = strstr(buffer, text);
     value = getValue(line);
     
@@ -72,7 +80,11 @@ void getData(char *buffer) {
         data.text = value;
         printf("text: %s", data.text);        
     }
+}
 
+void getDataSpace(char *buffer) {
+    
+    char _data[] = "VmData";
     line = strstr(buffer, _data);
     value = getValue(line);
     
@@ -80,7 +92,11 @@ void getData(char *buffer) {
         data.data = value;
         printf("data: %s", data.data);        
     }
+}
 
+void getStackSpace(char *buffer) {
+
+    char stack[] = "VmStk";
     line = strstr(buffer, stack);
     value = getValue(line);
     
@@ -88,7 +104,11 @@ void getData(char *buffer) {
         data.stack = value;
         printf("stack: %s", data.stack);        
     }
+}
 
+void getVoluntarySwitches(char *buffer) {
+    
+    char voluntary[] = "voluntary_ctxt_switches";
     line = strstr(buffer, voluntary);
     value = getValue(line);
     
@@ -96,6 +116,11 @@ void getData(char *buffer) {
         data.voluntary = value;
         printf("voluntary: %s", data.voluntary);        
     }
+}
+
+void getInvolutarySwitches(char *buffer) {
+
+    char involuntary[] = "nonvoluntary_ctxt_switches";       
 
     line = strstr(buffer, involuntary);
     value = getValue(line);
@@ -104,6 +129,19 @@ void getData(char *buffer) {
         data.involuntary = value;
         printf("involuntary: %s", data.involuntary);        
     }
+}
+
+// main functions
+
+void getData(char *buffer) {              
+
+    getName(buffer); 
+    getState(buffer);
+    getTextSpace(buffer);
+    getDataSpace(buffer);
+    getStackSpace(buffer);    
+    getVoluntarySwitches(buffer);
+    getInvolutarySwitches(buffer);    
 }
 
 void readFile() {
