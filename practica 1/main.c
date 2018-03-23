@@ -144,16 +144,15 @@ void getData(char *buffer) {
     getInvolutarySwitches(buffer);    
 }
 
-void readFile() {
-
-    char filename[80] = "status";
+void readFile(char *path) {
+    
     char buffer[100];
     FILE *file;
 
-    file = fopen(filename,"r");
+    file = fopen(path,"r");
     
     if(file == NULL) {
-        printf("file opening failed %s\n", filename);
+        printf("file opening failed for path: %s\n", path);
         exit(1);
     }
 
@@ -162,16 +161,24 @@ void readFile() {
     }
 }
 
+char *getFilePath(const char *pid) {
+
+    char *path = malloc(100);
+    char basePath[] = "/proc/";
+    char status[] = "/status";
+
+    strcat(path, basePath);
+    strcat(path, pid);
+    strcat(path, status);    
+
+    return path;
+}
+
 int main(int argc, char const *argv[]) {
 
-    char path[] = "/proc/";
-    char status[] = "/status";
     const char *pid = argv[1];
-    
-    strcat(path, pid);
-    strcat(path, status);
-    printf("%s \n", path);
 
-    readFile();
+    char *path = getFilePath(pid);
+    readFile(path);
 }
 
