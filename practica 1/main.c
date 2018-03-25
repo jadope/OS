@@ -162,11 +162,45 @@ char *getFilePath(const char *pid) {
     return path;
 }
 
-int main(int argc, char const *argv[]) {
+void processArgs(char *args[]) {
+    
+    int maximunLimit = 20;
+    char *pid = args[1]; 
+    char listFlag[] = "-l";
+    
+    if (strcmp(listFlag, pid) != 0) {
 
-    const char *pid = argv[1];        
+        char *path = getFilePath(pid);
+        readFile(path);
 
+    } else {
+
+         for (int j = 2; j < maximunLimit; j++) {
+
+            pid = args[j];
+            
+            if (pid == NULL) {
+                break;
+            }    
+
+            printf("arg: %s \n", pid);
+
+            // initilize a new struct
+            // process each file    
+        }
+    }
+
+    // return an array of structs     
+}
+
+int main(int argc, char *argv[]) {
+
+    processArgs(argv);
+
+    /* 
+    char *pid = argv[1];        
     char *path = getFilePath(pid);
     readFile(path);
+    */
 }
 
