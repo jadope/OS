@@ -1,14 +1,3 @@
-
-/* 
-    nombre, - Name
-    estado, - State
-    text, - VmExe
-    data, - VmData
-    stack, - VmStk
-    cambios de contextos voluntarios - voluntary_ctxt-switches
-    cambio de contexto no voluntarios - nonvoluntary_ctxt-switches
-*/
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -25,10 +14,9 @@ struct Data {
     char *involuntary;
 };
 
-struct Data data;
-
 // global variables
 
+struct Data data;
 char *line, *value;
 
 // utils
@@ -176,7 +164,7 @@ char *getFilePath(const char *pid) {
 
 int main(int argc, char const *argv[]) {
 
-    const char *pid = argv[1];
+    const char *pid = argv[1];        
 
     char *path = getFilePath(pid);
     readFile(path);
