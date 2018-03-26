@@ -14,9 +14,11 @@ struct Data {
     char *involuntary;
 };
 
+typedef struct Data Data;
+
 // global variables
 
-struct Data data;
+Data data;
 char *line, *value;
 
 // utils
@@ -162,9 +164,17 @@ char *getFilePath(const char *pid) {
     return path;
 }
 
+// argument processing
+
+Data *dynamicAllocation(int size) {
+
+    Data *array = malloc(size * sizeof(Data));    
+
+    return array;
+}
+
 void processArgs(char *args[]) {
     
-    int maximunLimit = 20;
     char *pid = args[1]; 
     char listFlag[] = "-l";
     
@@ -175,19 +185,24 @@ void processArgs(char *args[]) {
 
     } else {
 
-         for (int j = 2; j < maximunLimit; j++) {
+        int counter = 2;
 
-            pid = args[j];
-            
-            if (pid == NULL) {
-                break;
-            }    
+        while (args[counter] != NULL) {
 
-            printf("arg: %s \n", pid);
-
-            // initilize a new struct
-            // process each file    
+            printf("arg: %s \n", args[counter]);
+            counter++;            
         }
+
+        Data *dataArray = dynamicAllocation(counter);
+
+        for (int i = 2, j = 0; i < counter; i++, j++) {
+
+            pid = args[i];
+            char *path = getFilePath(pid);
+            readFile(path);            
+        }        
+
+        // printf("%s", dataArray[1]->name)
     }
 
     // return an array of structs     
@@ -195,12 +210,5 @@ void processArgs(char *args[]) {
 
 int main(int argc, char *argv[]) {
 
-    processArgs(argv);
-
-    /* 
-    char *pid = argv[1];        
-    char *path = getFilePath(pid);
-    readFile(path);
-    */
+    processArgs(argv);    
 }
-
