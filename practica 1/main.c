@@ -5,27 +5,22 @@
 // structures
 
 struct Data {
-    char *name;
-    char *state;
-    char *text;
-    char *data;
-    char *stack;
-    char *voluntary;
-    char *involuntary;
+    char name[100];
+    char state[100];
+    char text[100];
+    char data[100];
+    char stack[100];
+    char voluntary[200];
+    char involuntary[200];
 };
 
 typedef struct Data Data;
 
-// global variables
-
-Data data;
-char *line, *value;
-
 // utils
 
 char *getValue(char *line) {
-    char *value;
-    char divider = ':';
+
+    char *value, divider = ':';
 
     if (line != NULL) {
         value = strchr(line, divider);
@@ -36,105 +31,98 @@ char *getValue(char *line) {
     }
 }
 
-void getName(char *buffer) {
+void getName(char *buffer, Data *data) {
 
-    char name[] = "Name";
+    char name[] = "Name", *line, *value;
     line = strstr(buffer, name);
     value = getValue(line);
     
     if (value != NULL) {
-        data.name = value;        
-        printf("nombre: %s", data.name);
+        strcpy(data->name,value);                
     } 
 }
 
-void getState(char *buffer) {
+void getState(char *buffer, Data *data) {
 
-    char state[] = "State";
+    char state[] = "State", *line, *value;
     line = strstr(buffer, state);
     value = getValue(line);
     
-    if (value != NULL) {
-        data.state = value;
-        printf("estado: %s", data.state);        
+    if (value != NULL) {        
+        strcpy(data->state, value);          
     }
 }
 
-void getTextSpace(char *buffer) {
+void getTextSpace(char *buffer, Data *data) {
 
-    char text[] = "VmExe";
+    char text[] = "VmExe", *line, *value;
     line = strstr(buffer, text);
     value = getValue(line);
     
     if (value != NULL) {
-        data.text = value;
-        printf("text: %s", data.text);        
+        strcpy(data->text,value);              
     }
 }
 
-void getDataSpace(char *buffer) {
+void getDataSpace(char *buffer, Data *data) {
     
-    char _data[] = "VmData";
+    char _data[] = "VmData", *line, *value;
     line = strstr(buffer, _data);
     value = getValue(line);
     
     if (value != NULL) {
-        data.data = value;
-        printf("data: %s", data.data);        
+        strcpy(data->data, value);                
     }
 }
 
-void getStackSpace(char *buffer) {
+void getStackSpace(char *buffer, Data *data) {
 
-    char stack[] = "VmStk";
+    char stack[] = "VmStk", *line, *value;
     line = strstr(buffer, stack);
     value = getValue(line);
     
     if (value != NULL) {
-        data.stack = value;
-        printf("stack: %s", data.stack);        
+        strcpy(data->stack, value);            
     }
 }
 
-void getVoluntarySwitches(char *buffer) {
+void getVoluntarySwitches(char *buffer, Data *data) {
     
-    char voluntary[] = "voluntary_ctxt_switches";
+    char voluntary[] = "voluntary_ctxt_switches", *line, *value;
     line = strstr(buffer, voluntary);
     value = getValue(line);
     
-    if (value != NULL && data.voluntary == NULL) {
-        data.voluntary = value;
-        printf("voluntary: %s", data.voluntary);        
+    if (value != NULL && strlen(data->voluntary) == 0) {
+        strcpy(data->voluntary, value);             
     }
 }
 
-void getInvolutarySwitches(char *buffer) {
+void getInvolutarySwitches(char *buffer, Data *data) {
 
-    char involuntary[] = "nonvoluntary_ctxt_switches";       
+    char involuntary[] = "nonvoluntary_ctxt_switches", *line, *value;       
 
     line = strstr(buffer, involuntary);
-    value = getValue(line);
+    value = getValue(line);    
     
-    if (value != NULL) {
-        data.involuntary = value;
-        printf("involuntary: %s", data.involuntary);        
+    if (value != NULL) {        
+        strcpy(data->involuntary, value);               
     }
 }
 
 // main functions
 
-void getData(char *buffer) {              
+void getData(char *buffer, Data *data) {              
 
-    getName(buffer); 
-    getState(buffer);
-    getTextSpace(buffer);
-    getDataSpace(buffer);
-    getStackSpace(buffer);    
-    getVoluntarySwitches(buffer);
-    getInvolutarySwitches(buffer);    
+    getName(buffer, data); 
+    getState(buffer, data);
+    getTextSpace(buffer, data);
+    getDataSpace(buffer, data);
+    getStackSpace(buffer, data);    
+    getVoluntarySwitches(buffer, data);
+    getInvolutarySwitches(buffer, data);    
 }
 
-void readFile(char *path) {
+void readFile(char *path, Data *data) {
     
     char buffer[100];
     FILE *file;
@@ -147,7 +135,7 @@ void readFile(char *path) {
     }
 
     while (fgets(buffer, 100, file) != NULL) {            
-        getData(buffer);
+        getData(buffer, data);
     }
 }
 
@@ -164,14 +152,29 @@ char *getFilePath(const char *pid) {
     return path;
 }
 
-// argument processing
-
 Data *dynamicAllocation(int size) {
 
     Data *array = malloc(size * sizeof(Data));    
-
     return array;
 }
+
+// printing
+
+void printValues(int size, Data *data) {
+
+    for (int i = 0; i < size; i++) {
+        printf("nombre: %s", data[i].name);
+        printf("estado: %s", data[i].state);
+        printf("text: %s", data[i].text);
+        printf("data: %s", data[i].data);
+        printf("stack: %s", data[i].stack);
+        printf("voluntary: %s", data[i].voluntary);
+        printf("involuntary: %s", data[i].involuntary);
+    }
+}
+
+// argument processing
+
 
 void processArgs(char *args[]) {
     
@@ -180,8 +183,8 @@ void processArgs(char *args[]) {
     
     if (strcmp(listFlag, pid) != 0) {
 
-        char *path = getFilePath(pid);
-        readFile(path);
+        // char *path = getFilePath(pid);
+        // readFile(path);
 
     } else {
 
@@ -193,19 +196,19 @@ void processArgs(char *args[]) {
             counter++;            
         }
 
-        Data *dataArray = dynamicAllocation(counter);
+        int size = counter - 2;
+        Data *dataArray = dynamicAllocation(size);
 
-        for (int i = 2, j = 0; i < counter; i++, j++) {
+        for (int i = 2, j = 0; j < size; i++, j++) {
 
             pid = args[i];
             char *path = getFilePath(pid);
-            readFile(path);            
-        }        
 
-        // printf("%s", dataArray[1]->name)
-    }
+            readFile(path, &dataArray[j]);                        
+        }
 
-    // return an array of structs     
+        printValues(size, dataArray);
+    }    
 }
 
 int main(int argc, char *argv[]) {
