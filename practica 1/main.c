@@ -17,7 +17,7 @@ struct Data {
 
 typedef struct Data Data;
 
-// utils
+// data storing utilities
 
 char *getValue(char *line) {
 
@@ -112,7 +112,7 @@ void getInvolutarySwitches(char *buffer, Data *data) {
     }
 }
 
-// main functions
+// file reading and data storing utilities
 
 void getData(char *buffer, Data *data) {              
 
@@ -142,6 +142,14 @@ void readFile(char *path, Data *data) {
     }
 }
 
+// common utilities for the argument processing section
+
+Data *spawnDynamicDataArray(int size) {
+
+    Data *array = malloc(size * sizeof(Data));    
+    return array;
+}
+
 char *getFilePath(const char *pid) {
 
     char *path = malloc(100);
@@ -155,13 +163,11 @@ char *getFilePath(const char *pid) {
     return path;
 }
 
-Data *dynamicAllocation(int size) {
+void storeProcessData(char *pid, int pos, Data *dataArray) {
 
-    Data *array = malloc(size * sizeof(Data));    
-    return array;
+    char *path = getFilePath(pid);
+    readFile(path, &dataArray[pos]);
 }
-
-// printing
 
 void printValues(int size, Data *data) {
 
@@ -180,44 +186,63 @@ void printValues(int size, Data *data) {
 
 // argument processing
 
+// get and store the data of a single process
+void getProcessData(char *args[]) {
+    
+    int size = 1;
+    Data *dataArray = spawnDynamicDataArray(size);
+
+    char *pid = args[1]; 
+    strcpy(dataArray[0].pid, pid);
+
+    storeProcessData(pid, 0, dataArray);            
+    printValues(size, dataArray);
+}
+
+// get and store the data from a list of processes
+void getProcessListData(char *args[]) {
+
+    int counter = 2;
+
+    while (args[counter] != NULL) {            
+        counter++;            
+    }
+
+    int size = counter - 2;
+    Data *dataArray = spawnDynamicDataArray(size);
+
+    for (int i = 2, j = 0; j < size; i++, j++) {
+
+        char *pid = args[i];
+        strcpy(dataArray[j].pid, pid);
+
+        storeProcessData(pid, j, dataArray);                          
+    }
+
+    printValues(size, dataArray);     
+}
+
 void processArgs(char *args[]) {
     
-    char *pid = args[1]; 
-    char listFlag[] = "-l";
-    int  size;
-    Data *dataArray;
+    char *flag = args[1]; 
     
-    if (strcmp(listFlag, pid) != 0) {
+    char listFlag[] = "-l";
+    char saveFlag[] = "-r";  
 
-        size = 1;
-        dataArray = dynamicAllocation(size);
-        strcpy(dataArray[1].pid, pid);
-               
-        char *path = getFilePath(pid);
-        readFile(path, &dataArray[0]);   
+    if (strcmp(listFlag, flag) != 0 && strcmp(saveFlag, flag) != 0) {
 
-    } else {
+        getProcessData(args);
+    }
+    
+    if (strcmp(listFlag, flag) == 0) {
+        
+        getProcessListData(args);       
+    } 
+    
+    if (strcmp(saveFlag, flag) == 0) {
 
-        int counter = 2;
-
-        while (args[counter] != NULL) {            
-            counter++;            
-        }
-
-        size = counter - 2;
-        dataArray = dynamicAllocation(size);
-
-        for (int i = 2, j = 0; j < size; i++, j++) {
-
-            pid = args[i];
-            strcpy(dataArray[j].pid, pid);
-
-            char *path = getFilePath(pid);
-            readFile(path, &dataArray[j]);                        
-        }        
-    }    
-
-    printValues(size, dataArray);
+        getProcessListData(args);       
+    }        
 }
 
 int main(int argc, char *argv[]) {
