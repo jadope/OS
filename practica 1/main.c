@@ -5,6 +5,7 @@
 // structures
 
 struct Data {
+    char pid[100];
     char name[100];
     char state[100];
     char text[100];
@@ -25,6 +26,8 @@ char *getValue(char *line) {
     if (line != NULL) {
         value = strchr(line, divider);
         value++;
+
+
         return value;
     } else {
         return NULL;
@@ -163,52 +166,58 @@ Data *dynamicAllocation(int size) {
 void printValues(int size, Data *data) {
 
     for (int i = 0; i < size; i++) {
-        printf("nombre: %s", data[i].name);
+        printf("proceso: %s \n", data[i].pid);
+        printf("nombre del proceso: %s", data[i].name);
         printf("estado: %s", data[i].state);
-        printf("text: %s", data[i].text);
-        printf("data: %s", data[i].data);
-        printf("stack: %s", data[i].stack);
-        printf("voluntary: %s", data[i].voluntary);
-        printf("involuntary: %s", data[i].involuntary);
+        printf("tamaño de la region TEXT: %s", data[i].text);
+        printf("tamaño de la region DATA: %s", data[i].data);
+        printf("tamaño de la region STACK: %s", data[i].stack);
+        printf("cambios voluntarios: %s", data[i].voluntary);
+        printf("cambios involuntarios: %s", data[i].involuntary);
+        printf("\n");
     }
 }
 
 // argument processing
 
-
 void processArgs(char *args[]) {
     
     char *pid = args[1]; 
     char listFlag[] = "-l";
+    int  size;
+    Data *dataArray;
     
     if (strcmp(listFlag, pid) != 0) {
 
-        // char *path = getFilePath(pid);
-        // readFile(path);
+        size = 1;
+        dataArray = dynamicAllocation(size);
+        strcpy(dataArray[1].pid, pid);
+               
+        char *path = getFilePath(pid);
+        readFile(path, &dataArray[0]);   
 
     } else {
 
         int counter = 2;
 
-        while (args[counter] != NULL) {
-
-            printf("arg: %s \n", args[counter]);
+        while (args[counter] != NULL) {            
             counter++;            
         }
 
-        int size = counter - 2;
-        Data *dataArray = dynamicAllocation(size);
+        size = counter - 2;
+        dataArray = dynamicAllocation(size);
 
         for (int i = 2, j = 0; j < size; i++, j++) {
 
             pid = args[i];
+            strcpy(dataArray[j].pid, pid);
+
             char *path = getFilePath(pid);
-
             readFile(path, &dataArray[j]);                        
-        }
-
-        printValues(size, dataArray);
+        }        
     }    
+
+    printValues(size, dataArray);
 }
 
 int main(int argc, char *argv[]) {
