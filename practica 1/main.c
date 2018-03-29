@@ -116,6 +116,7 @@ void getInvolutarySwitches(char *buffer, Data *data) {
 
 void getData(char *buffer, Data *data) {              
 
+    // todo: stop the execution when found
     getName(buffer, data); 
     getState(buffer, data);
     getTextSpace(buffer, data);
@@ -140,6 +141,20 @@ void readFile(char *path, Data *data) {
     while (fgets(buffer, 100, file) != NULL) {            
         getData(buffer, data);
     }
+}
+
+void writeToFile(char *path, char *line) {
+
+    FILE *fp;
+    fp = fopen(path, "a+");
+    fputs(line, fp);
+
+    fclose(fp);
+}
+
+void removeFile(char *path) {
+
+    remove(path);
 }
 
 // common utilities for the argument processing section
@@ -169,18 +184,57 @@ void storeProcessData(char *pid, int pos, Data *dataArray) {
     readFile(path, &dataArray[pos]);
 }
 
-void printValues(int size, Data *data) {
+void printValues(int size, Data *data, int writeFlag, char *path) {
 
     for (int i = 0; i < size; i++) {
-        printf("proceso: %s \n", data[i].pid);
-        printf("nombre del proceso: %s", data[i].name);
-        printf("estado: %s", data[i].state);
-        printf("tamaño de la region TEXT: %s", data[i].text);
-        printf("tamaño de la region DATA: %s", data[i].data);
-        printf("tamaño de la region STACK: %s", data[i].stack);
-        printf("cambios voluntarios: %s", data[i].voluntary);
-        printf("cambios involuntarios: %s", data[i].involuntary);
-        printf("\n");
+
+        char pid[150];
+        sprintf(pid, "proceso: %s \n", data[i].pid);
+        
+        char name[150];
+        sprintf(name, "nombre del proceso: %s", data[i].name);
+
+        char state[150];
+        sprintf(state, "estado: %s", data[i].state);
+
+        char text[150];
+        sprintf(text, "tamaño de la region TEXT: %s", data[i].text);
+
+        char dataRegion[150];
+        sprintf(dataRegion, "tamaño de la region DATA: %s", data[i].data);
+
+        char stack[150];
+        sprintf(stack, "tamaño de la region STACK: %s", data[i].stack);
+
+        char voluntary[150];
+        sprintf(voluntary, "cambios voluntarios: %s", data[i].voluntary);
+
+        char involuntary[150];
+        sprintf(involuntary, "cambios involuntarios: %s \n", data[i].voluntary);
+
+        // todo: automate this process
+        if (writeFlag != 1) {
+
+            printf("%s", pid);
+            printf("%s", name);
+            printf("%s", state);
+            printf("%s", text);
+            printf("%s", dataRegion);
+            printf("%s", stack);
+            printf("%s", voluntary);
+            printf("%s", involuntary);            
+
+        } else {
+            
+            writeToFile(path, pid);
+            writeToFile(path, name);
+            writeToFile(path, state);
+            writeToFile(path, text);
+            writeToFile(path, dataRegion);
+            writeToFile(path, stack);
+            writeToFile(path, voluntary);
+            writeToFile(path, involuntary);
+        }        
     }
 }
 
@@ -189,23 +243,25 @@ void printValues(int size, Data *data) {
 // get and store the data of a single process
 void getProcessData(char *args[]) {
     
-    int size = 1;
+    int size = 1, writeFlag = 0;
     Data *dataArray = spawnDynamicDataArray(size);
 
     char *pid = args[1]; 
     strcpy(dataArray[0].pid, pid);
 
     storeProcessData(pid, 0, dataArray);            
-    printValues(size, dataArray);
+    printValues(size, dataArray, writeFlag, NULL);
 }
 
 // get and store the data from a list of processes
-void getProcessListData(char *args[]) {
+void getProcessListData(char *args[], int writeFlag) {
 
     int counter = 2;
+    char path[150];
+    strcpy(path, "psinfo-report");
 
     while (args[counter] != NULL) {            
-        counter++;            
+        counter++;
     }
 
     int size = counter - 2;
@@ -213,13 +269,26 @@ void getProcessListData(char *args[]) {
 
     for (int i = 2, j = 0; j < size; i++, j++) {
 
-        char *pid = args[i];
-        strcpy(dataArray[j].pid, pid);
+        char *pid = args[i];    
 
+        strcat(path, "-");        
+        strcat(path, pid);        
+
+        strcpy(dataArray[j].pid, pid);
         storeProcessData(pid, j, dataArray);                          
     }
 
-    printValues(size, dataArray);     
+    if (writeFlag != 1) {
+
+        printValues(size, dataArray, writeFlag, NULL);     
+
+    } else {
+        
+        strcat(path, ".txt");        
+        removeFile(path);
+        // printf("%s", path);        
+        printValues(size, dataArray, writeFlag, path);        
+    }    
 }
 
 void processArgs(char *args[]) {
@@ -228,6 +297,7 @@ void processArgs(char *args[]) {
     
     char listFlag[] = "-l";
     char saveFlag[] = "-r";  
+    int writeFlag;
 
     if (strcmp(listFlag, flag) != 0 && strcmp(saveFlag, flag) != 0) {
 
@@ -236,12 +306,14 @@ void processArgs(char *args[]) {
     
     if (strcmp(listFlag, flag) == 0) {
         
-        getProcessListData(args);       
+        writeFlag = 0;
+        getProcessListData(args, writeFlag);       
     } 
     
     if (strcmp(saveFlag, flag) == 0) {
 
-        getProcessListData(args);       
+        writeFlag = 1;
+        getProcessListData(args, writeFlag);       
     }        
 }
 
