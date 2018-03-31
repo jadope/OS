@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 
 // structures
 
@@ -23,13 +24,21 @@ typedef struct Data Data;
 char *getValue(char *line) {
 
     char *value, divider = ':';
+    char trimmedValue[100];
 
     if (line != NULL) {
+        
         value = strchr(line, divider);
-        value++;
+        value++;        
+
+        while(isspace(*value)) {
+            value++;
+        }        
+
         return value;
         
     } else {
+
         return NULL;
     }
 }
@@ -247,7 +256,7 @@ void printValues(int size, Data *data, int writeFlag, char *path) {
             printf("%s", segment);
             printf("%s", text);            
             printf("%s", dataRegion);
-            printf("%s", stack);
+            printf("%s", stack);        
             printf("%s", voluntary);
             printf("%s", involuntary);            
 
