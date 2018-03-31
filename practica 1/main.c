@@ -140,10 +140,10 @@ void readFile(char *path, Data *data) {
 
     } else {
 
-    while (fgets(buffer, 100, file) != NULL) {            
-        getData(buffer, data);
+        while (fgets(buffer, 100, file) != NULL) {            
+            getData(buffer, data);
+        }
     }
-}
 }
 
 void writeToFile(char *path, char *line) {
@@ -159,8 +159,8 @@ void writeToFile(char *path, char *line) {
     } else {
 
         fputs(line, fp);
-    fclose(fp);
-}
+        fclose(fp);
+    }
 }
 
 void removeFile(char *path) {
@@ -340,25 +340,40 @@ void getProcessListData(char *args[], int writeFlag) {
     } else {
         
         strcat(path, ".txt");        
+        printf("generando archivo: %s \n", path);
+
         removeFile(path);
         printValues(size, dataArray, writeFlag, path);        
     }    
 }
 
 // check if the provided flag is of type "-r" or "-l"
-void checkFlag(char *flag) {
+void checkInput(char *flag, char *args[]) {
 
     if (flag == NULL) {
         printf("No hay argumentos \n");           
         exit(2);
     }
 
+    // todo: check asyntomatic complexity
     if (flag[0] == '-') {
 
         if (flag[1] != 'r' && flag[1] != 'l') {
 
-            printf("El argumento %s no es valido, utilize encambio -l o -r \n", flag);   
+            printf("El argumento %s no es valido, utilice en cambio -l o -r \n", flag);   
             exit(1);
+        }
+
+        if (args[2] == NULL) {
+            printf("No hay argumentos \n");           
+            exit(2);
+        }
+
+    } else {
+
+        if (args[1] == NULL) {
+            printf("No hay argumentos \n");           
+            exit(2);
         }
     }
 }
@@ -371,7 +386,7 @@ void processArgs(char *args[]) {
     char saveFlag[] = "-r";  
     int writeFlag;
 
-    checkFlag(flag);
+    checkInput(flag, args);
 
     if (strcmp(listFlag, flag) != 0 && strcmp(saveFlag, flag) != 0) {
 
