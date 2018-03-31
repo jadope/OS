@@ -112,11 +112,9 @@ void getInvolutarySwitches(char *buffer, Data *data) {
     }
 }
 
-// file reading and data storing utilities
-
 void getData(char *buffer, Data *data) {              
 
-    // todo: stop the execution when found
+    // todo: stop the execution when a line is found and store    
     getName(buffer, data); 
     getState(buffer, data);
     getTextSpace(buffer, data);
@@ -126,6 +124,8 @@ void getData(char *buffer, Data *data) {
     getInvolutarySwitches(buffer, data);    
 }
 
+// file reading and data storing utilities
+
 void readFile(char *path, Data *data) {
     
     char buffer[100];
@@ -134,22 +134,33 @@ void readFile(char *path, Data *data) {
     file = fopen(path,"r");
     
     if(file == NULL) {
-        printf("file opening failed for path: %s\n", path);
+    
+        printf("Unexpected error while opening a file in the following path: %s \n", path);        
         exit(1);
-    }
+
+    } else {
 
     while (fgets(buffer, 100, file) != NULL) {            
         getData(buffer, data);
     }
+}
 }
 
 void writeToFile(char *path, char *line) {
 
     FILE *fp;
     fp = fopen(path, "a+");
-    fputs(line, fp);
 
+    if(fp == NULL) {
+    
+        printf("Unexpected error while opening a file in the following path: %s \n", path);        
+        exit(1);
+
+    } else {
+
+        fputs(line, fp);
     fclose(fp);
+}
 }
 
 void removeFile(char *path) {
@@ -170,7 +181,7 @@ char *getFilePath(const char *pid) {
     char *path = malloc(100);
     char basePath[] = "/proc/";
     char status[] = "/status";
-
+    
     strcat(path, basePath);
     strcat(path, pid);
     strcat(path, status);    
@@ -240,16 +251,57 @@ void printValues(int size, Data *data, int writeFlag, char *path) {
 
 // argument processing
 
+// check for every process existance
+void checkArguments(int pos, int size, char *arguments[]) {
+
+    int flag = 0, errorIndex = 0;
+    char messages[size][100];
+    FILE *fp;
+
+    for(int i = pos, j = 0; j < size; i++, j++) {
+        
+        char *pid = arguments[i];
+        char *path = getFilePath(pid);                
+
+        fp = fopen(path, "r");        
+        
+        if (fp == NULL) {      
+
+            // todo: something is stored on path if the file opening failed
+            free(path);
+            strcpy(messages[errorIndex], pid);            
+            errorIndex++;
+            flag = 1;            
+        }
+    }
+
+    if (flag == 1) {
+
+        printf("hay argumentos invalidos. Estos procesos no se han podido encontrar: \n");
+
+        for (int i = 0; i < errorIndex; i++) {
+
+            printf("%s \n", messages[i]);
+        }
+
+        exit(1);
+    }
+}
+
+
 // get and store the data of a single process
 void getProcessData(char *args[]) {
     
     int size = 1, writeFlag = 0;
+
+    checkArguments(1, size, args);
+
     Data *dataArray = spawnDynamicDataArray(size);
-
     char *pid = args[1]; 
-    strcpy(dataArray[0].pid, pid);
 
+    strcpy(dataArray[0].pid, pid);
     storeProcessData(pid, 0, dataArray);            
+
     printValues(size, dataArray, writeFlag, NULL);
 }
 
@@ -258,14 +310,17 @@ void getProcessListData(char *args[], int writeFlag) {
 
     int counter = 2;
     char path[150];
-    strcpy(path, "psinfo-report");
 
     while (args[counter] != NULL) {            
         counter++;
     }
 
     int size = counter - 2;
+
+    checkArguments(2, size, args);
+
     Data *dataArray = spawnDynamicDataArray(size);
+    strcpy(path, "psinfo-report");    
 
     for (int i = 2, j = 0; j < size; i++, j++) {
 
@@ -286,9 +341,26 @@ void getProcessListData(char *args[], int writeFlag) {
         
         strcat(path, ".txt");        
         removeFile(path);
-        // printf("%s", path);        
         printValues(size, dataArray, writeFlag, path);        
     }    
+}
+
+// check if the provided flag is of type "-r" or "-l"
+void checkFlag(char *flag) {
+
+    if (flag == NULL) {
+        printf("No hay argumentos \n");           
+        exit(2);
+    }
+
+    if (flag[0] == '-') {
+
+        if (flag[1] != 'r' && flag[1] != 'l') {
+
+            printf("El argumento %s no es valido, utilize encambio -l o -r \n", flag);   
+            exit(1);
+        }
+    }
 }
 
 void processArgs(char *args[]) {
@@ -298,6 +370,8 @@ void processArgs(char *args[]) {
     char listFlag[] = "-l";
     char saveFlag[] = "-r";  
     int writeFlag;
+
+    checkFlag(flag);
 
     if (strcmp(listFlag, flag) != 0 && strcmp(saveFlag, flag) != 0) {
 
@@ -315,6 +389,8 @@ void processArgs(char *args[]) {
         writeFlag = 1;
         getProcessListData(args, writeFlag);       
     }        
+
+    exit(0);
 }
 
 int main(int argc, char *argv[]) {
