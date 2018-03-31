@@ -8,6 +8,7 @@ struct Data {
     char pid[100];
     char name[100];
     char state[100];
+    char segment[100];
     char text[100];
     char data[100];
     char stack[100];
@@ -26,9 +27,8 @@ char *getValue(char *line) {
     if (line != NULL) {
         value = strchr(line, divider);
         value++;
-
-
         return value;
+        
     } else {
         return NULL;
     }
@@ -53,6 +53,17 @@ void getState(char *buffer, Data *data) {
     
     if (value != NULL) {        
         strcpy(data->state, value);          
+    }
+}
+
+void getSegmentsSpace(char *buffer, Data *data) {
+
+    char segmentData[] = "VmData", *line, *value;
+    line = strstr(buffer, segmentData);
+    value = getValue(line);
+    
+    if (value != NULL) {        
+        strcpy(data->segment, value);          
     }
 }
 
@@ -117,6 +128,7 @@ void getData(char *buffer, Data *data) {
     // todo: stop the execution when a line is found and store    
     getName(buffer, data); 
     getState(buffer, data);
+    getSegmentsSpace(buffer, data);
     getTextSpace(buffer, data);
     getDataSpace(buffer, data);
     getStackSpace(buffer, data);    
@@ -207,6 +219,9 @@ void printValues(int size, Data *data, int writeFlag, char *path) {
 
         char state[150];
         sprintf(state, "estado: %s", data[i].state);
+        
+        char segment[150];
+        sprintf(segment, "tamaño total de la imagen de memoria: %s", data[i].segment);
 
         char text[150];
         sprintf(text, "tamaño de la region TEXT: %s", data[i].text);
@@ -229,7 +244,8 @@ void printValues(int size, Data *data, int writeFlag, char *path) {
             printf("%s", pid);
             printf("%s", name);
             printf("%s", state);
-            printf("%s", text);
+            printf("%s", segment);
+            printf("%s", text);            
             printf("%s", dataRegion);
             printf("%s", stack);
             printf("%s", voluntary);
@@ -240,7 +256,8 @@ void printValues(int size, Data *data, int writeFlag, char *path) {
             writeToFile(path, pid);
             writeToFile(path, name);
             writeToFile(path, state);
-            writeToFile(path, text);
+            writeToFile(path, segment);
+            writeToFile(path, text);            
             writeToFile(path, dataRegion);
             writeToFile(path, stack);
             writeToFile(path, voluntary);
@@ -287,7 +304,6 @@ void checkArguments(int pos, int size, char *arguments[]) {
         exit(1);
     }
 }
-
 
 // get and store the data of a single process
 void getProcessData(char *args[]) {
