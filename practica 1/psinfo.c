@@ -253,7 +253,7 @@ void printValues(int size, Data *data, int writeFlag, char *path) {
         sprintf(voluntary, "cambios voluntarios: %s", data[i].voluntary);
 
         char involuntary[150];
-        sprintf(involuntary, "cambios involuntarios: %s \n", data[i].voluntary);
+        sprintf(involuntary, "cambios involuntarios: %s \n", data[i].involuntary);
 
         // todo: automate this process
         if (writeFlag != 1) {
