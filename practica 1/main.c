@@ -23,8 +23,7 @@ typedef struct Data Data;
 
 char *getValue(char *line) {
 
-    char *value, divider = ':';
-    char trimmedValue[100];
+    char *value, divider = ':';    
 
     if (line != NULL) {
         
@@ -33,7 +32,7 @@ char *getValue(char *line) {
 
         while(isspace(*value)) {
             value++;
-        }        
+        }                
 
         return value;
         
@@ -194,6 +193,15 @@ void removeFile(char *path) {
 Data *spawnDynamicDataArray(int size) {
 
     Data *array = malloc(size * sizeof(Data));    
+
+    for (int i = 0; i < size; i++) {
+        char noValue[] = "0 \n";
+        strcpy(array[i].segment, noValue);
+        strcpy(array[i].text, noValue);
+        strcpy(array[i].data, noValue);
+        strcpy(array[i].stack, noValue);    
+    }
+
     return array;
 }
 
@@ -328,6 +336,8 @@ void getProcessData(char *args[]) {
     storeProcessData(pid, 0, dataArray);            
 
     printValues(size, dataArray, writeFlag, NULL);
+
+    free(dataArray);
 }
 
 // get and store the data from a list of processes
@@ -370,6 +380,8 @@ void getProcessListData(char *args[], int writeFlag) {
         removeFile(path);
         printValues(size, dataArray, writeFlag, path);        
     }    
+
+    free(dataArray);
 }
 
 // check if the provided flag is of type "-r" or "-l"
