@@ -22,7 +22,7 @@ int main () {
   }
 
   wait(&estado);  
-  
+
   if (pid == 0) {
       // Lógica del hijo
       printf("Soy el hijo #%d\n", numProceso);
