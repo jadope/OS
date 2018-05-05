@@ -11,10 +11,12 @@ int main(int argc, char const *argv[]) {
     char expresion[TAM];
     char** items;   
 
-    printf("\nSO@cli $ ");
-    fgets (expresion, TAM, stdin);
+    while(1) {
 
-    num = separaItems (expresion, &items, &background);    
+        printf("\nSO@cli $ ");
+        fgets (expresion, TAM, stdin);
 
-    printf ("Numero de parametros: %d\n", num);
+        num = separaItems (expresion, &items, &background);    
+        printf ("Numero de parametros: %d\n", num);        
+    }    
 }
