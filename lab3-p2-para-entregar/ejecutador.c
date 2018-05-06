@@ -70,7 +70,9 @@ void issueCall(char *expresion, char** items, int itemsSize, int background) {
             break;
 
         case myecho:
-            printf("its an echo! \n");            
+            program = "/commands/myecho.o";
+            strcat(path, program);            
+            spawnChild(path, items, background);       
             break;
 
         case myclear:
