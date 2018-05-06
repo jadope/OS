@@ -14,7 +14,7 @@ int main(int argc, char const *argv[]) {
 
     printf("\n");
 
-    while(1) {
+    while(1) { 
 
         printf("SO@cli $ ");
         fgets (expresion, TAM, stdin);

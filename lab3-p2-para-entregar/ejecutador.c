@@ -43,9 +43,8 @@ void spawnChild(char* path, char** items, int background) {
     childProcess = fork();
 
     if (childProcess == 0){
-        execv(path, items);        
-        // exit(0);
-    } else {
+        execv(path, items);                
+    } else {    
         if (background == 0) {
             wait(&estado);
         }
@@ -62,12 +61,11 @@ void issueCall(char *expresion, char** items, int itemsSize, int background) {
     switch(getCommand(items[0])) {     
 
         case mypwd:         
-
             program = "/commands/mypwd.o";
             strcat(path, program);            
             spawnChild(path, items, background);
             break;
-
+            
         case mycp:
             printf("its a cp! \n");        
             break;

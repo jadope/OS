@@ -1,3 +1,4 @@
+all: cli clean
 
 CC=gcc
 CFLAGS=-I.
@@ -11,4 +12,4 @@ cli: $(OBJ)
 	$(CC) -o $@ $^ $(CFLAGS)
 
 clean:
-	rm -f cli $(OBJ) *~ 
+	rm -f *.o
