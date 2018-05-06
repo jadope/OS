@@ -8,7 +8,7 @@
 
 int main(int argc, char const *argv[]) {
 
-    int background, num;    
+    int background, itemsSize;    
     char expresion[TAM];
     char** items;   
 
@@ -17,9 +17,7 @@ int main(int argc, char const *argv[]) {
         printf("\nSO@cli $ ");
         fgets (expresion, TAM, stdin);
 
-        num = separaItems (expresion, &items, &background);    
-        printf ("Numero de parametros: %d\n", num);
-
-        issueCall(expresion, items, background);
+        itemsSize = separaItems (expresion, &items, &background);    
+        issueCall(expresion, items, itemsSize, background);
     }    
 }
