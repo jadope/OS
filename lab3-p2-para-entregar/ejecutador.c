@@ -6,7 +6,6 @@
 #include <sys/wait.h>   // wait
 #include <sys/types.h>  // pid_t
 
-
 // comands
 #define outercall -1
 #define mypwd 1
@@ -64,16 +63,20 @@ void issueCall(char *expresion, char** items, int itemsSize, int background) {
             program = "/commands/mypwd.o";
             strcat(path, program);            
             spawnChild(path, items, background);
-            break;            
+            break;
+
         case mycp:
             printf("its a cp! \n");        
             break;
+
         case myecho:
             printf("its an echo! \n");            
             break;
+
         case myclear:
             printf("its a clear! \n");       
             break;
+
         case outercall:
             printf("outer call \n");   
             break;  
