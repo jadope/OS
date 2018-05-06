@@ -1,7 +1,7 @@
 
 CC=gcc
 CFLAGS=-I.
-DEPS=parser.h
+DEPS=parser.h ejecutador.h
 OBJ=parser.o main.o ejecutador.o
 
 %.o: %.c $(DEPS)

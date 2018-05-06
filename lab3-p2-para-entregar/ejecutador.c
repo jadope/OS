@@ -1,5 +1,8 @@
 #include <stdio.h>
 #include <string.h>
+#include <unistd.h>     // execvp, getcwd
+#include <sys/types.h>  // fork
+#include <sys/wait.h>   // wait
 
 // comands
 #define outercall -1
@@ -9,14 +12,12 @@
 #define myclear 4
 
 // struct definition
-struct CliDictionary {
+typedef struct {
     char *key;
     int val;
-};
+} CliDictionary;
 
-typedef struct CliDictionary CliDictionary;
-
-// struct initialization
+// struct array initialization
 static CliDictionary lookUpTable[] = {
     {"mypwd", mypwd}, {"mycp", mycp}, {"myecho", myecho}, {"myclear", myclear}
 };
@@ -31,13 +32,37 @@ int getCommand(char *key) {
     return outercall;
 }
 
+void spawnChild(char* path, char** items, int background) {
+
+    int pid;
+
+    if( (pid == fork()) == 0 ){
+        
+        execv(path, items);
+
+    } else {
+
+        if (background == 0) {
+            wait(&pid);
+        }
+    }
+}
+
 void issueCall(char *expresion, char** items, int itemsSize, int background) {
+
+    char* program;
+    char path[200];
+
+    getcwd(path, sizeof(path));
 
     switch(getCommand(items[0])) {     
 
-        case mypwd:
-            printf("its a pwd!");    
+        case mypwd:                        
+            program = "/commands/mypwd.o";
+            strcat(path, program);            
+            spawnChild(path, items, background);
             break;
+
         case mycp:
             printf("its a cp!");        
             break;

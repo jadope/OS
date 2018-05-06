@@ -12,9 +12,11 @@ int main(int argc, char const *argv[]) {
     char expresion[TAM];
     char** items;   
 
+    printf("\n");
+    
     while(1) {
 
-        printf("\nSO@cli $ ");
+        printf("SO@cli $ ");
         fgets (expresion, TAM, stdin);
 
         itemsSize = separaItems (expresion, &items, &background);    
