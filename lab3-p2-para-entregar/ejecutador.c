@@ -64,8 +64,7 @@ void issueCall(char *expresion, char** items, int itemsSize, int background) {
             program = "/commands/mypwd.o";
             strcat(path, program);            
             spawnChild(path, items, background);
-            break;
-            
+            break;            
         case mycp:
             printf("its a cp! \n");        
             break;
