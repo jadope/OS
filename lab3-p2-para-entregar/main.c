@@ -13,7 +13,7 @@ int main(int argc, char const *argv[]) {
     char** items;   
 
     printf("\n");
-    
+
     while(1) {
 
         printf("SO@cli $ ");
@@ -21,5 +21,6 @@ int main(int argc, char const *argv[]) {
 
         itemsSize = separaItems (expresion, &items, &background);    
         issueCall(expresion, items, itemsSize, background);
+        liberaItems(items);
     }    
 }

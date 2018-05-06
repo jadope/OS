@@ -58,8 +58,6 @@ int main(){
                 printf("Soy el nieto 1.\n");
                 printf("Nieto 1: Mi PID es %d\n", getpid());
                 printf("Nieto 1: El PID de mi padre es %d\n", getppid());
-
-
             }
             else{ // sigue siendo el hijo 2.
                 wait(&estado);

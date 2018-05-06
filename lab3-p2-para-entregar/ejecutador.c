@@ -1,8 +1,11 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>     //exit
 #include <unistd.h>     // execvp, getcwd
 #include <sys/types.h>  // fork
 #include <sys/wait.h>   // wait
+#include <sys/types.h>  // pid_t
+
 
 // comands
 #define outercall -1
@@ -34,16 +37,17 @@ int getCommand(char *key) {
 
 void spawnChild(char* path, char** items, int background) {
 
-    int pid;
+    int estado;
+    pid_t childProcess;
 
-    if( (pid == fork()) == 0 ){
-        
-        execv(path, items);
+    childProcess = fork();
 
+    if (childProcess == 0){
+        execv(path, items);        
+        // exit(0);
     } else {
-
         if (background == 0) {
-            wait(&pid);
+            wait(&estado);
         }
     }
 }
@@ -51,28 +55,30 @@ void spawnChild(char* path, char** items, int background) {
 void issueCall(char *expresion, char** items, int itemsSize, int background) {
 
     char* program;
-    char path[200];
+    char path[300];
 
     getcwd(path, sizeof(path));
 
     switch(getCommand(items[0])) {     
 
-        case mypwd:                        
+        case mypwd:         
+
             program = "/commands/mypwd.o";
             strcat(path, program);            
             spawnChild(path, items, background);
             break;
 
         case mycp:
-            printf("its a cp!");        
+            printf("its a cp! \n");        
             break;
         case myecho:
-            printf("its an echo!");            
+            printf("its an echo! \n");            
             break;
         case myclear:
-            printf("its a clear!");       
+            printf("its a clear! \n");       
             break;
         case outercall:
-            printf("outer call");     
+            printf("outer call \n");   
+            break;  
     }
 }
