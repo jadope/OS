@@ -13,6 +13,7 @@
 #define myecho 3
 #define myclear 4
 #define mykill 5
+#define mytime 6
 
 // struct definition
 typedef struct {
@@ -23,7 +24,7 @@ typedef struct {
 // struct array initialization
 static CliDictionary lookUpTable[] = {
     {"mypwd", mypwd}, {"mycp", mycp}, {"myecho", myecho}, {"myclear", myclear},
-    {"mykill", mykill}
+    {"mykill", mykill}, {"mytime", mytime}
 };
 
 int getCommand(char *key) {
@@ -86,6 +87,12 @@ void issueCall(char *expresion, char** items, int itemsSize, int background) {
             strcat(path, program);            
             spawnChild(path, items, background);       
             break;
+
+         case mytime:
+            program = "/commands/mytime.o";
+            strcat(path, program);            
+            spawnChild(path, items, background);       
+            break;    
 
         case outercall:
             printf("outer call \n");   
