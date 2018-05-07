@@ -17,8 +17,8 @@ int main(int argc, char const *argv[]) {
     while(1) { 
 
         printf("SO@cli $ ");
-        fgets (expresion, TAM, stdin);
-
+        fgets (expresion, TAM, stdin);    
+        
         itemsSize = separaItems (expresion, &items, &background);    
         issueCall(expresion, items, itemsSize, background);
         liberaItems(items);
