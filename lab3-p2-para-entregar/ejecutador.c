@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <string.h>
-#include <stdlib.h>     // exit
+#include <stdlib.h>     //exit
 #include <unistd.h>     // execvp, getcwd
 #include <sys/types.h>  // fork
 #include <sys/wait.h>   // wait
@@ -49,11 +49,7 @@ void issueCall(char *expresion, char** items , int background) {
             program = "/commands/mypwd.o";
             strcat(path, program);            
             spawnChild(path, items, background);
-            break;
-
-        case mycp:
-            printf("its a cp! \n");        
-            break;
+            break;        
 
         case myecho:
             program = "/commands/myecho.o";
