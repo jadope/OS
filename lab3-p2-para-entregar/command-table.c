@@ -19,14 +19,22 @@ typedef struct {
 
 // struct array initialization
 static CliDictionary lookUpTable[] = {
-    {"mypwd", mypwd}, {"mycp", mycp}, {"myecho", myecho}, {"myclear", myclear},
-    {"mykill", mykill}, {"mytime", mytime}, {"myps", myps}, {"myexit", myexit}
+    {"mypwd", mypwd}, 
+    {"mycp", mycp},
+    {"myecho", myecho}, 
+    {"myclear", myclear},
+    {"mykill", mykill}, 
+    {"mytime", mytime}, 
+    {"myps", myps},
+    {"myexit", myexit}
 };
 
 int getCommand(char *key) {
 
     long dictionarySize = (sizeof(lookUpTable)/ sizeof(CliDictionary));
-    for (int i = 0; i < dictionarySize; i++) {    
+    
+    for (int i = 0; i < dictionarySize; i++) {  
+
         if (strcmp(lookUpTable[i].key, key) == 0)
             return lookUpTable[i].val;            
     }
