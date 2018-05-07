@@ -67,7 +67,7 @@ void spawnChild(char* path, char** items, int background) {
     }
 }
 
-void issueCall(char *expresion, char** items, int itemsSize, int background) {
+void issueCall(char *expresion, char** items , int background) {
 
     char* program;
     char path[300];
