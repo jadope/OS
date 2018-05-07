@@ -2,8 +2,8 @@ all: cli clean
 
 CC=gcc
 CFLAGS=-I.
-DEPS=parser.h ejecutador.h
-OBJ=parser.o main.o ejecutador.o
+DEPS=parser.h ejecutador.h command-table.h
+OBJ=parser.o main.o ejecutador.o command-table.o
 
 %.o: %.c $(DEPS)
 	$(CC) -Wall -c -o $@ $< $(CFLAGS)
