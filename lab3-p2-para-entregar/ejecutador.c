@@ -5,6 +5,7 @@
 #include <sys/types.h>  // fork
 #include <sys/wait.h>   // wait
 #include <sys/types.h>  // pid_t
+#include <errno.h>
 
 // comands
 #define outercall -1
@@ -39,16 +40,27 @@ int getCommand(char *key) {
     return outercall;
 }
 
+void handleError(int resultCode) {
+
+    if (resultCode == -1) {
+        printf("El programa no se pudo ejecutar y ha generado el siguiente error: %d\n", errno);
+    }
+}
+
 void spawnChild(char* path, char** items, int background) {
 
-    int estado;
+    int estado, resultCode;
     pid_t childProcess;
 
     childProcess = fork();
 
     if (childProcess == 0){
-        execv(path, items);                
+        
+        resultCode = execv(path, items);                
+        handleError(resultCode);
+
     } else {    
+
         if (background == 0) {
             wait(&estado);
         }
@@ -108,7 +120,8 @@ void issueCall(char *expresion, char** items, int itemsSize, int background) {
             exit(0);
 
         case outercall:
-            printf("outer call \n");   
+            program = items[0];                        
+            spawnChild(program, items, background);
             break;  
     }
 }
